@@ -103,13 +103,13 @@ body {
   justify-content: center;
   align-items: flex-start;
   overflow: hidden;
-  max-height: calc(100vh - 120px); /* 60px header + 60px footer */
+  max-height: calc(100vh - 130px); /* 60px header + 70px footer */
 }
 
 .center-area {
   display: flex;
   width: 90%;
-  height: calc(100vh - 150px);
+  height: calc(100vh - 160px); /* Обновление для новой высоты футера */
   overflow: hidden;
   position: relative;
 }
@@ -121,9 +121,10 @@ body {
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-height: calc(100vh - 150px);
+  max-height: calc(100vh - 160px);
   overflow-y: auto;
-  animation: slideIn 0.4s forwards;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  animation: slideIn 0.4s ease;
   position: absolute;
   right: 0;
   top: 0;
@@ -156,7 +157,7 @@ body {
 .center-window {
   width: 100%;
   min-height: 400px;
-  max-height: calc(100vh - 150px);
+  max-height: calc(100vh - 160px);
   background-color: var(--bg-secondary);
   border-radius: 12px;
   padding: 1rem;
@@ -353,7 +354,7 @@ body {
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid var(--border-color);
-  height: 60px; /* Уменьшаем высоту футера */
+  height: 70px; /* Увеличиваем высоту футера для увеличенного логотипа */
   flex-shrink: 0; /* Запрещаем сжатие */
 }
 
@@ -413,7 +414,12 @@ body {
 }
 
 .glowbyte-logo {
-  height: 30px;
+  height: 45px;
+  transition: transform 0.3s ease;
+}
+
+.glowbyte-logo:hover {
+  transform: scale(1.1);
 }
 
 /* Модальные окна */
@@ -554,6 +560,9 @@ body {
 
 .qr-caption {
   color: var(--text-secondary);
+  white-space: pre-line; /* Сохраняет переносы строк и объединяет пробелы */
+  line-height: 1.3;
+  margin-top: 0.3rem;
 }
 
 /* Стили для инструкции */
@@ -589,6 +598,29 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.8rem;
+}
+
+/* Стили для карты */
+.map-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-container h3 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Центрируем содержимое Map компонента по вертикали */
+.map-container > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 230px);
 }
 
 @media (max-width: 768px) {

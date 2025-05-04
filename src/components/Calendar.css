@@ -110,7 +110,7 @@
   transition: all 0.3s;
   position: relative;
   background: var(--bg-primary);
-  color: var(--text-primary);
+  color: #000000;
   font-size: 0.85rem;
   margin: 0 auto;
 }
@@ -134,17 +134,17 @@
 
 .calendar-day.fire {
   background-color: rgba(255, 0, 0, 0.2);
-  color: var(--fire-color);
+  color: #c50000;
 }
 
 .calendar-day.safe {
   background-color: rgba(0, 255, 0, 0.2);
-  color: var(--safe-color);
+  color: #006400;
 }
 
 .calendar-day.risk {
   background-color: rgba(255, 255, 0, 0.2);
-  color: var(--risk-color);
+  color: #7a6800;
 }
 
 .calendar-day.selected {
@@ -255,4 +255,22 @@
   max-height: 50px;
   max-width: 50px;
   font-size: 0.8rem;
+}
+
+/* Override the color for dark theme */
+.dark .calendar-day {
+  color: var(--text-primary);
+}
+
+/* Override colors for dark theme */
+.dark .calendar-day.fire {
+  color: var(--fire-color);
+}
+
+.dark .calendar-day.safe {
+  color: var(--safe-color);
+}
+
+.dark .calendar-day.risk {
+  color: var(--risk-color);
 } 

@@ -19,7 +19,13 @@ const Map = () => {
   }, []);
 
   const handlePointClick = (point) => {
-    setSelectedPoint(point);
+    if (selectedPoint && selectedPoint.id === point.id) {
+      // If clicking on the same point, deselect it
+      setSelectedPoint(null);
+    } else {
+      // Otherwise, select the new point
+      setSelectedPoint(point);
+    }
   };
 
   const getStatusColor = (status) => {

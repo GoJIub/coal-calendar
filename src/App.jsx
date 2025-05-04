@@ -28,11 +28,26 @@ function App() {
   const [activePanel, setActivePanel] = useState(null); // 'map', 'wind' или 'stats'
 
   const qrCodes = [
-    { src: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://youtube.com/', caption: 'YouTube' },
-    { src: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://vk.com/', caption: 'VK' },
-    { src: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://t.me/', caption: 'Telegram' },
-    { src: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://github.com/', caption: 'GitHub' },
-    { src: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://example.com/', caption: 'Example' }
+    { 
+      src: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://t.me/SugarZhenia', 
+      caption: 'Евгений\nФронтендер' 
+    },
+    { 
+      src: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://t.me/Girday', 
+      caption: 'Максим\nФронтендер' 
+    },
+    { 
+      src: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://t.me/KR4K6', 
+      caption: 'Андрей\nАналитик' 
+    },
+    { 
+      src: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://t.me/hxllmvdx', 
+      caption: 'Матвей\nML-специалист' 
+    },
+    { 
+      src: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://t.me/tayaKU21', 
+      caption: 'Тая\nБэкендер' 
+    },
   ];
 
   useEffect(() => {
@@ -120,7 +135,7 @@ function App() {
   return (
     <div className="main-wrapper">
       <header className="main-header">
-        <h1 className="main-title">Предсказание возгораний</h1>
+        <h1 className="main-title">Прогноз возгораний</h1>
         <div className="header-actions">
           <button className="header-btn" onClick={() => setShowUploadModal(true)}>
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -141,19 +156,19 @@ function App() {
               className={`side-btn-mockup ${activePanel === 'map' ? 'active' : ''}`}
               onClick={() => togglePanel('map')}
             >
-              <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g>
-                  <path d="M34.9999 40.8334C36.547 40.8334 38.0307 40.2188 39.1247 39.1249C40.2187 38.0309 40.8332 36.5472 40.8332 35.0001C40.8332 33.453 40.2187 31.9693 39.1247 30.8753C38.0307 29.7813 36.547 29.1667 34.9999 29.1667C33.4528 29.1667 31.9691 29.7813 30.8751 30.8753C29.7812 31.9693 29.1666 33.453 29.1666 35.0001C29.1666 36.5472 29.7812 38.0309 30.8751 39.1249C31.9691 40.2188 33.4528 40.8334 34.9999 40.8334Z" stroke="currentColor" strokeWidth="2.81713" strokeMiterlimit="10"/>
-                  <path d="M20.4167 34.9994H2.91667M67.0833 34.9994H49.5833M35 49.5828V67.0828M45.3133 45.3128L49.4375 49.4369M20.5625 20.5619L24.6896 24.6861M45.3133 24.6861L49.4375 20.5619M20.5625 49.4369L24.6896 45.3128M35 2.91611V20.4161" stroke="currentColor" strokeWidth="2.81713" strokeMiterlimit="10" strokeLinecap="round"/>
-                </g>
+              <svg width="59" height="59" viewBox="0 0 59 59" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" clipRule="evenodd" d="M58.3252 0.416035C58.5363 0.589111 58.7063 0.806906 58.823 1.0537C58.9397 1.30048 59.0002 1.57011 59 1.8431V53.4681C58.9997 53.8942 58.8519 54.307 58.5817 54.6364C58.3114 54.9658 57.9354 55.1915 57.5176 55.275L39.0801 58.9625C38.8416 59.0102 38.5959 59.0102 38.3574 58.9625L20.2812 55.3487L2.20512 58.9625C1.93774 59.0159 1.66183 59.0094 1.39727 58.9434C1.13271 58.8773 0.886091 58.7534 0.675179 58.5806C0.464266 58.4078 0.294312 58.1903 0.17756 57.9439C0.0608075 57.6975 0.000164657 57.4283 0 57.1556L0 5.5306C0.000257321 5.10452 0.148076 4.69168 0.418323 4.36228C0.688569 4.03287 1.06456 3.80723 1.48238 3.72372L19.9199 0.0362227C20.1584 -0.0114594 20.4041 -0.0114594 20.6426 0.0362227L38.7188 3.64997L56.7949 0.0362227C57.0622 -0.0175565 57.3381 -0.0113854 57.6027 0.0542914C57.8673 0.119968 58.1141 0.243516 58.3252 0.416035ZM36.875 7.04247L22.125 4.09247V51.9562L36.875 54.9062V7.04247ZM40.5625 54.9062L55.3125 51.9562V4.09247L40.5625 7.04247V54.9062ZM18.4375 51.9562V4.09247L3.6875 7.04247V54.9062L18.4375 51.9562Z" fill="currentColor"/>
               </svg>
             </button>
             <button 
               className={`side-btn-mockup ${activePanel === 'wind' ? 'active' : ''}`}
               onClick={() => togglePanel('wind')}
             >
-              <svg width="59" height="59" viewBox="0 0 59 59" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" clipRule="evenodd" d="M58.3252 0.416035C58.5363 0.589111 58.7063 0.806906 58.823 1.0537C58.9397 1.30048 59.0002 1.57011 59 1.8431V53.4681C58.9997 53.8942 58.8519 54.307 58.5817 54.6364C58.3114 54.9658 57.9354 55.1915 57.5176 55.275L39.0801 58.9625C38.8416 59.0102 38.5959 59.0102 38.3574 58.9625L20.2812 55.3487L2.20512 58.9625C1.93774 59.0159 1.66183 59.0094 1.39727 58.9434C1.13271 58.8773 0.886091 58.7534 0.675179 58.5806C0.464266 58.4078 0.294312 58.1903 0.17756 57.9439C0.0608075 57.6975 0.000164657 57.4283 0 57.1556L0 5.5306C0.000257321 5.10452 0.148076 4.69168 0.418323 4.36228C0.688569 4.03287 1.06456 3.80723 1.48238 3.72372L19.9199 0.0362227C20.1584 -0.0114594 20.4041 -0.0114594 20.6426 0.0362227L38.7188 3.64997L56.7949 0.0362227C57.0622 -0.0175565 57.3381 -0.0113854 57.6027 0.0542914C57.8673 0.119968 58.1141 0.243516 58.3252 0.416035ZM36.875 7.04247L22.125 4.09247V51.9562L36.875 54.9062V7.04247ZM40.5625 54.9062L55.3125 51.9562V4.09247L40.5625 7.04247V54.9062ZM18.4375 51.9562V4.09247L3.6875 7.04247V54.9062L18.4375 51.9562Z" fill="currentColor"/>
+              <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                  <path d="M34.9999 40.8334C36.547 40.8334 38.0307 40.2188 39.1247 39.1249C40.2187 38.0309 40.8332 36.5472 40.8332 35.0001C40.8332 33.453 40.2187 31.9693 39.1247 30.8753C38.0307 29.7813 36.547 29.1667 34.9999 29.1667C33.4528 29.1667 31.9691 29.7813 30.8751 30.8753C29.7812 31.9693 29.1666 33.453 29.1666 35.0001C29.1666 36.5472 29.7812 38.0309 30.8751 39.1249C31.9691 40.2188 33.4528 40.8334 34.9999 40.8334Z" stroke="currentColor" strokeWidth="2.81713" strokeMiterlimit="10"/>
+                  <path d="M20.4167 34.9994H2.91667M67.0833 34.9994H49.5833M35 49.5828V67.0828M45.3133 45.3128L49.4375 49.4369M20.5625 20.5619L24.6896 24.6861M45.3133 24.6861L49.4375 20.5619M20.5625 49.4369L24.6896 45.3128M35 2.91611V20.4161" stroke="currentColor" strokeWidth="2.81713" strokeMiterlimit="10" strokeLinecap="round"/>
+                </g>
               </svg>
             </button>
             <button 
@@ -172,7 +187,12 @@ function App() {
           </div>
           {activePanel && (
             <div className="side-panel">
-              {activePanel === 'map' && <Map />}
+              {activePanel === 'map' && (
+                <div className="map-container">
+                  <h3>Карта возгораний</h3>
+                  <Map />
+                </div>
+              )}
               {activePanel === 'wind' && (
                 <div className="wind-rose">
                   <h3>Роза ветров</h3>
