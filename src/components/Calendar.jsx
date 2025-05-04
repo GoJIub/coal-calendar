@@ -24,23 +24,40 @@ const Calendar = () => {
 
   const handlePrevMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+    setSelectedDay(null); // Сбрасываем выбранный день при смене месяца
   };
 
   const handleNextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
+    setSelectedDay(null); // Сбрасываем выбранный день при смене месяца
   };
 
   const handleDayClick = (day) => {
-    setSelectedDay(day);
+    if (selectedDay === day) {
+      // Если кликнули на уже выбранный день - отменяем выбор
+      setSelectedDay(null);
+    } else {
+      setSelectedDay(day);
+    }
   };
 
-  // Временные данные для демонстрации
-  const getDayStatus = (day) => {
-    const random = Math.random();
-    if (random < 0.3) return 'fire'; // Красный - возгорание
-    if (random < 0.6) return 'safe'; // Зеленый - нет возгорания
-    return 'risk'; // Желтый - риск
+  // Фиксируем статусы дней, чтобы они не менялись при перерисовке
+  const getStatuses = () => {
+    const statuses = {};
+    const seed = currentDate.getFullYear() * 100 + currentDate.getMonth();
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      // Используем детерминированное псевдослучайное число на основе дня и месяца
+      const random = ((seed * day) % 100) / 100;
+      if (random < 0.3) statuses[day] = 'fire';
+      else if (random < 0.6) statuses[day] = 'safe';
+      else statuses[day] = 'risk';
+    }
+    
+    return statuses;
   };
+  
+  const dayStatuses = getStatuses();
 
   const renderCalendarDays = () => {
     const days = [];
@@ -53,7 +70,7 @@ const Calendar = () => {
 
     // Добавляем дни месяца
     for (let day = 1; day <= daysInMonth; day++) {
-      const status = getDayStatus(day);
+      const status = dayStatuses[day];
       days.push(
         <div
           key={day}
@@ -75,10 +92,10 @@ const Calendar = () => {
   };
 
   return (
-    <div className="calendar">
+    <div className={`calendar ${selectedDay ? 'with-selected-day' : ''}`}>
       <div className="calendar-header">
         <button className="calendar-nav-btn" onClick={handlePrevMonth}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
@@ -86,7 +103,7 @@ const Calendar = () => {
           {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
         </h2>
         <button className="calendar-nav-btn" onClick={handleNextMonth}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
         </button>
@@ -110,11 +127,11 @@ const Calendar = () => {
         <div className="day-info">
           <h3>Информация за {selectedDay} {monthNames[currentDate.getMonth()]}</h3>
           <div className="day-status">
-            <span className={`status-indicator ${getDayStatus(selectedDay)}`}></span>
+            <span className={`status-indicator ${dayStatuses[selectedDay]}`}></span>
             <span>
-              {getDayStatus(selectedDay) === 'fire' && 'Зафиксировано возгорание'}
-              {getDayStatus(selectedDay) === 'safe' && 'Возгораний не зафиксировано'}
-              {getDayStatus(selectedDay) === 'risk' && 'Повышенный риск возгорания'}
+              {dayStatuses[selectedDay] === 'fire' && 'Зафиксировано возгорание'}
+              {dayStatuses[selectedDay] === 'safe' && 'Возгораний не зафиксировано'}
+              {dayStatuses[selectedDay] === 'risk' && 'Повышенный риск возгорания'}
             </span>
           </div>
           <div className="day-details">
