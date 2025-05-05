@@ -4,6 +4,9 @@ import moonIcon from './assets/moon.svg';
 import glowbyteLogo from './assets/glowbyte.svg';
 import Calendar from './components/Calendar';
 import Map from './components/Map';
+import Statistics from './components/Statistics';
+import WindRose from './components/WindRose';
+import UploadModal from './components/UploadModal';
 import './index.css';
 
 const instructionMd = `- **Интерфейс**:
@@ -20,9 +23,6 @@ function App() {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
   const [showQrModal, setShowQrModal] = useState(false);
   const [showInstructionModal, setShowInstructionModal] = useState(false);
   const [activePanel, setActivePanel] = useState(null); // 'map', 'wind' или 'stats'
@@ -91,47 +91,6 @@ function App() {
     }
   };
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
-    validateAndSetFile(file);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    validateAndSetFile(file);
-  };
-
-  const validateAndSetFile = (file) => {
-    if (!file) return;
-    
-    if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
-      setErrorMessage('Пожалуйста, выберите файл в формате CSV');
-      setSelectedFile(null);
-      return;
-    }
-
-    setErrorMessage('');
-    setSelectedFile(file);
-  };
-
-  const uploadFile = () => {
-    if (!selectedFile) return;
-    console.log('Загрузка файла:', selectedFile.name);
-    setShowUploadModal(false);
-  };
-
   return (
     <div className="main-wrapper">
       <header className="main-header">
@@ -189,50 +148,17 @@ function App() {
             <div className="side-panel">
               {activePanel === 'map' && (
                 <div className="map-container">
-                  <h3>Карта возгораний</h3>
                   <Map />
                 </div>
               )}
               {activePanel === 'wind' && (
-                <div className="wind-rose">
-                  <h3>Роза ветров</h3>
-                  <div className="wind-rose-content">
-                    <div className="compass">
-                      <div className="direction north">С</div>
-                      <div className="direction east">В</div>
-                      <div className="direction south">Ю</div>
-                      <div className="direction west">З</div>
-                      <div className="compass-arrow"></div>
-                    </div>
-                    <div className="wind-stats">
-                      <p>Преобладающее направление: СВ</p>
-                      <p>Средняя скорость: 5.2 м/с</p>
-                      <p>Максимальная скорость: 12 м/с</p>
-                    </div>
-                  </div>
+                <div className="wind-rose-container">
+                  <WindRose />
                 </div>
               )}
               {activePanel === 'stats' && (
-                <div className="statistics">
-                  <h3>Статистика возгораний</h3>
-                  <div className="stats-content">
-                    <div className="stat-item">
-                      <div className="stat-label">Всего пожаров</div>
-                      <div className="stat-value">42</div>
-                    </div>
-                    <div className="stat-item">
-                      <div className="stat-label">Риск возгорания</div>
-                      <div className="stat-value">Средний</div>
-                    </div>
-                    <div className="stat-item">
-                      <div className="stat-label">Дней без пожаров</div>
-                      <div className="stat-value">14</div>
-                    </div>
-                    <div className="stat-item">
-                      <div className="stat-label">Средняя температура</div>
-                      <div className="stat-value">27°C</div>
-                    </div>
-                  </div>
+                <div className="statistics-container">
+                  <Statistics />
                 </div>
               )}
             </div>
@@ -248,127 +174,82 @@ function App() {
               <div className="context-menu menu-align-left">
                 <div className="context-menu-item">Email: berezin.aw06@gmail.com</div>
                 <div className="context-menu-item">Телефон: +7 (985) 215-47-85</div>
-                <div className="context-menu-item">Git: https://github.com/hxllmvdx/MatMod-glowbyte-case.git</div>
+                <div className="context-menu-item link" onClick={() => { setActiveMenu(null); setShowQrModal(true); }}>
+                  QR-коды авторов
+                </div>
               </div>
             )}
           </div>
           <div className="footer-nav-item">
-            <a href="#" onClick={(e) => { e.preventDefault(); setShowQrModal(true); }}>О нас</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); toggleMenu('about'); }}>О нас</a>
+            {activeMenu === 'about' && (
+              <div className="context-menu menu-align-center">
+                <div className="context-menu-item">
+                  <img src={glowbyteLogo} alt="Glowbyte" width="120" />
+                </div>
+                <div className="context-menu-item">
+                  Проект команды Glowbyte для хакатона
+                </div>
+                <div className="context-menu-item">
+                  Прогнозирование возгораний на угольных складах
+                </div>
+                <div className="context-menu-item">
+                  Москва, 2023
+                </div>
+              </div>
+            )}
           </div>
           <div className="footer-nav-item">
-            <a href="#" onClick={(e) => { e.preventDefault(); setShowInstructionModal(true); }}>Инструкция</a>
-            {activeMenu === 'instructions' && (
-              <div className="context-menu">
-                <div className="context-menu-item">Начало работы</div>
-                <div className="context-menu-item">Основные функции</div>
+            <a href="#" onClick={(e) => { e.preventDefault(); toggleMenu('instruction'); }}>Инструкция</a>
+            {activeMenu === 'instruction' && (
+              <div className="context-menu menu-align-right">
+                <div className="context-menu-item">
+                  Краткая инструкция по использованию
+                </div>
+                <div className="context-menu-item link" onClick={() => { setActiveMenu(null); setShowInstructionModal(true); }}>
+                  Подробнее
+                </div>
               </div>
             )}
           </div>
         </nav>
-        <div className="footer-logo-copyright">
-          <img src={glowbyteLogo} alt="GlowByte Logo" className="glowbyte-logo" />
-          <span>© Copyright</span>
-        </div>
       </footer>
 
-      {/* Модальное окно загрузки */}
       {showUploadModal && (
-        <div className="modal-overlay" onClick={() => setShowUploadModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Загрузка файла</h2>
-              <button className="modal-close" onClick={() => setShowUploadModal(false)}>×</button>
-            </div>
-            <div className="modal-body">
-              <div 
-                className={`upload-area ${isDragging ? 'drag-over' : ''}`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-              >
-                <input 
-                  type="file" 
-                  onChange={handleFileSelect} 
-                  accept=".csv"
-                  className="file-input"
-                />
-                <div className="upload-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="17 8 12 3 7 8"/>
-                    <line x1="12" y1="3" x2="12" y2="15"/>
-                  </svg>
-                </div>
-                <p className="upload-text">Перетащите CSV файл сюда или кликните для выбора</p>
-                <p className="upload-hint">Поддерживаются только файлы формата .csv</p>
-              </div>
-              {selectedFile && (
-                <div className="selected-file">
-                  <p>Выбран файл: {selectedFile.name}</p>
-                  <button className="upload-btn" onClick={uploadFile}>Загрузить</button>
-                </div>
-              )}
-              {errorMessage && (
-                <div className="error-message">
-                  {errorMessage}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        <UploadModal onClose={() => setShowUploadModal(false)} />
       )}
 
-      {/* Модальное окно с QR-кодами */}
       {showQrModal && (
         <div className="modal-overlay" onClick={() => setShowQrModal(false)}>
-          <div className="modal-content qr-modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Наши QR-коды</h2>
-              <button className="modal-close" onClick={() => setShowQrModal(false)}>×</button>
-            </div>
-            <div className="modal-body qr-list">
-              {qrCodes.map((qr, idx) => (
-                <div key={idx} className="qr-item">
-                  <img src={qr.src} alt={qr.caption} className="qr-img" />
-                  <div className="qr-caption">{qr.caption}</div>
+          <div className="modal qr-modal" onClick={(e) => e.stopPropagation()}>
+            <h2>Контакты команды</h2>
+            <div className="qr-codes">
+              {qrCodes.map((qr, index) => (
+                <div key={index} className="qr-code-item">
+                  <img src={qr.src} alt={`QR ${index + 1}`} />
+                  <p>{qr.caption.split('\n').map((line, i) => (
+                    <span key={i}>{line}<br/></span>
+                  ))}</p>
                 </div>
               ))}
             </div>
+            <button className="modal-close-btn" onClick={() => setShowQrModal(false)}>Закрыть</button>
           </div>
         </div>
       )}
 
-      {/* Модальное окно инструкции */}
       {showInstructionModal && (
         <div className="modal-overlay" onClick={() => setShowInstructionModal(false)}>
-          <div className="modal-content instruction-modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Краткая инструкция</h2>
-              <button className="modal-close" onClick={() => setShowInstructionModal(false)}>×</button>
+          <div className="modal instruction-modal" onClick={(e) => e.stopPropagation()}>
+            <h2>Инструкция по использованию</h2>
+            <div className="instruction-content">
+              <div dangerouslySetInnerHTML={{ __html: instructionMd.replace(/\n/g, '<br>') }} />
             </div>
-            <div className="modal-body instruction-body">
-              <ul>
-                <li><strong>Интерфейс</strong>:
-                  <ul>
-                    <li>Шапка: "Добавить", переключение темы (солнце/луна).</li>
-                    <li>Боковая панель: Карта, роза ветров, статистика.</li>
-                    <li>Основное: Календарь (красный — возгорание, зелёный — нет, жёлтый — риск).</li>
-                    <li>Подвал: Контакты, "О нас", инструкция.</li>
-                  </ul>
-                </li>
-                <li><strong>Функции</strong>:
-                  <ol>
-                    <li><strong>Добавить данные</strong>: "Добавить" → файлы/ввод → подтвердить.</li>
-                    <li><strong>Календарь</strong>: Стрелки для месяцев, клик на день для инфо.</li>
-                    <li><strong>Дополнительные функции</strong>: Переключение через боковую панель.</li>
-                  </ol>
-                </li>
-              </ul>
-            </div>
+            <button className="modal-close-btn" onClick={() => setShowInstructionModal(false)}>Закрыть</button>
           </div>
         </div>
       )}
-      </div>
+    </div>
   );
 }
 

@@ -1,0 +1,2 @@
+date,t,p,humidity,precipitation,wind_dir,v_avg,v_max,cloudcover,weather_code
+2015-01-01 03:00:00,-2.1,1026.6,75,0.0,41,34.2,54.0,98,3

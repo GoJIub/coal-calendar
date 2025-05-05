@@ -1,12 +1,165 @@
-# React + Vite
+# Прогноз возгораний на угольных складах
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Приложение для прогнозирования возгораний угля с визуализацией в виде календаря и карты.
 
-Currently, two official plugins are available:
+## Описание
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Это приложение предназначено для мониторинга и прогнозирования возгораний на угольных складах. Оно позволяет:
 
-## Expanding the ESLint configuration
+- Загружать данные о температуре угля, погоде и истории возгораний
+- Прогнозировать риск возгораний на основе загруженных данных
+- Визуализировать данные и прогнозы на календаре и карте
+- Просматривать детальную статистику и розу ветров
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Технологии
+
+### Фронтенд
+- React
+- Vite
+- CSS
+
+### Бэкенд
+- Python
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+
+## Установка
+
+### Требования
+- Python 3.10+
+- Node.js 18+
+- npm 9+
+
+### Шаг 1: Клонирование репозитория
+```bash
+git clone https://github.com/username/coal-calendar.git
+cd coal-calendar
+```
+
+### Шаг 2: Установка зависимостей для фронтенда
+```bash
+npm install
+```
+
+### Шаг 3: Установка зависимостей для FastAPI бэкенда
+```bash
+cd server
+pip install -r requirements.txt
+cd ..
+```
+
+## Запуск приложения
+
+### Вариант 1: Запуск через BAT-файл (рекомендуется для Windows)
+```bash
+start_fastapi.bat
+```
+Это запустит фронтенд и бэкенд в отдельных окнах командной строки.
+
+### Вариант 2: Ручной запуск компонентов
+
+#### В первом терминале (бэкенд):
+```bash
+cd server
+python -m uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
+```
+
+#### Во втором терминале (фронтенд):
+```bash
+npm run dev
+```
+
+### Вариант 3: Запуск с использованием Python-скрипта
+```bash
+python start_fastapi.py
+```
+
+## Доступ к приложению
+
+После запуска:
+1. Фронтенд: URL будет указан в консоли (обычно http://localhost:5173)
+2. Бэкенд API: http://localhost:5000
+3. Документация API: http://localhost:5000/docs
+
+## Загрузка данных
+
+После запуска приложения выполните следующие шаги для загрузки тестовых данных:
+
+1. Откройте приложение в браузере (http://localhost:5173 или адрес, указанный в консоли Vite)
+2. Нажмите кнопку "Добавить" в верхнем правом углу
+3. Загрузите тестовые CSV-файлы из директории `/server/examples/`:
+   - Температура угля: `coal.csv`
+   - Погодные данные: `weather.csv`
+   - История возгораний: `fire_history.csv`
+4. Нажмите "Загрузить и создать прогнозы"
+
+## Работа с приложением
+
+### Основные функции
+
+1. **Календарь** - Отображает статус по дням:
+   - Красный: зафиксировано возгорание
+   - Желтый: повышенный риск возгорания
+   - Зеленый: безопасно
+
+2. **Карта** - Отображает места возгораний и их статус
+
+3. **Роза ветров** - Показывает информацию о ветре и его влиянии
+
+4. **Статистика** - Отображает общую статистику по возгораниям
+
+### Навигация
+
+- Используйте кнопки в боковой панели для переключения между картой, розой ветров и статистикой
+- Нажимайте на дни в календаре для получения детальной информации
+- Используйте кнопки в шапке для переключения темы и добавления данных
+
+## Структура CSV-файлов
+
+### Температура угля (coal)
+```
+date,location,temperature
+2023-01-01,Зона A,35.2
+2023-01-02,Зона A,36.5
+```
+
+### Погодные данные (weather)
+```
+date,location,temperature,humidity,wind_speed,wind_direction
+2023-01-01,Зона A,25.5,45.2,5.6,СВ
+2023-01-02,Зона A,26.1,43.8,4.9,ЮВ
+```
+
+### История возгораний (fire_history)
+```
+date,location,has_fire,severity
+2023-01-01,Зона A,false,0
+2023-01-02,Зона A,true,3
+```
+
+## Устранение неполадок
+
+### Проблемы с запуском бэкенда
+
+1. **Ошибка подключения к базе данных**:
+   - Проверьте строку подключения в файле `server/app/database.py`
+   - Убедитесь, что PostgreSQL сервер запущен и доступен
+
+2. **Ошибка зависимостей Python**:
+   - Убедитесь, что все зависимости установлены: `pip install -r server/requirements.txt`
+   - Проверьте версию Python (рекомендуется 3.10+)
+
+3. **Порт 5000 занят**:
+   - Измените порт в команде запуска uvicorn: `--port 5001`
+   - Обновите URL бэкенда в `src/api/index.js`
+
+### Проблемы с запуском фронтенда
+
+1. **Ошибки npm**:
+   - Убедитесь, что Node.js и npm установлены
+   - Попробуйте удалить папку `node_modules` и повторить `npm install`
+
+2. **Проблемы с подключением к API**:
+   - Проверьте константу `API_URL` в файле `src/api/index.js`
+   - Убедитесь, что бэкенд запущен и доступен
