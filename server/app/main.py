@@ -5,6 +5,9 @@ import uvicorn
 from .database import engine, Base
 from .routers import upload, calendar, map, statistics, wind, predict
 
+# Создаем таблицы в базе данных
+Base.metadata.create_all(bind=engine)
+
 # Создаем экземпляр FastAPI
 app = FastAPI(
     title="Прогноз возгораний на угольных складах",

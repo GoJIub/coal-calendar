@@ -8,19 +8,16 @@ from ..database import Base
 
 # SQLAlchemy модель
 class Weather(Base):
-    __tablename__ = f"weather_{datetime.now().strftime('%Y%m%d_%H%M%S')}"  # Уникальное имя таблицы с номером
+    __tablename__ = "weather"
 
-    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    date = Column(DateTime, nullable=False)
-    t = Column(Float, nullable=False)
-    p = Column(Float, nullable=False)
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(Date, nullable=False)
+    location = Column(String, nullable=False)
+    temperature = Column(Float, nullable=False)
     humidity = Column(Float, nullable=False)
-    precipitation = Column(Float, nullable=True)
-    wind_dir = Column(Integer, nullable=True)
-    v_avg = Column(Float, nullable=True)
-    v_max = Column(Float, nullable=True)
-    cloudcover = Column(Integer, nullable=True)
-    weather_code = Column(Integer, nullable=True)
+    wind_speed = Column(Float, nullable=False)
+    wind_direction = Column(String, nullable=True)
+    created_at = Column(DateTime, default=func.now())
 
 # Pydantic модели для API
 class WeatherBase(BaseModel):

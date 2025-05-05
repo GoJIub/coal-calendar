@@ -7,7 +7,8 @@ const Statistics = () => {
     totalFires: 0,
     daysSinceLastFire: 0,
     averageTemperature: 0,
-    currentRiskLevel: 'Неизвестно'
+    currentRiskLevel: 'Неизвестно',
+    fireDetails: [] // New field for detailed fire history
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +25,13 @@ const Statistics = () => {
       const response = await getStatistics();
       
       if (response.success) {
-        setStats(response.data);
+        setStats({
+          totalFires: response.data.totalFires,
+          daysSinceLastFire: response.data.daysSinceLastFire,
+          averageTemperature: response.data.averageTemperature,
+          currentRiskLevel: response.data.currentRiskLevel,
+          fireDetails: response.data.fireDetails // Populate detailed fire history
+        });
       } else {
         setError('Не удалось загрузить статистику');
         console.error('Ошибка при загрузке статистики:', response.message);
@@ -34,7 +41,8 @@ const Statistics = () => {
           totalFires: 42,
           daysSinceLastFire: 14,
           averageTemperature: 27,
-          currentRiskLevel: 'Средний'
+          currentRiskLevel: 'Средний',
+          fireDetails: [] // Empty fire details as fallback
         });
       }
     } catch (err) {
@@ -46,7 +54,8 @@ const Statistics = () => {
         totalFires: 42,
         daysSinceLastFire: 14,
         averageTemperature: 27,
-        currentRiskLevel: 'Средний'
+        currentRiskLevel: 'Средний',
+        fireDetails: [] // Empty fire details as fallback
       });
     } finally {
       setIsLoading(false);
@@ -113,10 +122,21 @@ const Statistics = () => {
             <div className="stat-label">Средняя температура</div>
             <div className="stat-value">{stats.averageTemperature}°C</div>
           </div>
+
+          <div className="stat-item">
+            <div className="stat-label">Детали пожаров</div>
+            <ul>
+              {stats.fireDetails.map((fire, index) => (
+                <li key={index}>
+                  {`Дата: ${fire.creation_date}, Груз: ${fire.cargo}, Вес: ${fire.weight}, Склад: ${fire.warehouse}`}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-export default Statistics; 
+export default Statistics;

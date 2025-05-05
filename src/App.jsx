@@ -5,7 +5,6 @@ import glowbyteLogo from './assets/glowbyte.svg';
 import Calendar from './components/Calendar';
 import Map from './components/Map';
 import Statistics from './components/Statistics';
-import WindRose from './components/WindRose';
 import UploadModal from './components/UploadModal';
 import './index.css';
 
@@ -24,8 +23,7 @@ function App() {
   const [activeMenu, setActiveMenu] = useState(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
-  const [showInstructionModal, setShowInstructionModal] = useState(false);
-  const [activePanel, setActivePanel] = useState(null); // 'map', 'wind' или 'stats'
+  const [activePanel, setActivePanel] = useState(null); // 'map' или 'stats'
 
   const qrCodes = [
     { 
@@ -91,6 +89,10 @@ function App() {
     }
   };
 
+  const handleInstructionClick = () => {
+    window.open('https://docs.google.com/document/d/1ykoRcwQWhLXCo4OXEcnyM2_2rTEW677cTSwm3UHJ-I0/edit?tab=t', '_blank');
+  };
+
   return (
     <div className="main-wrapper">
       <header className="main-header">
@@ -120,17 +122,6 @@ function App() {
               </svg>
             </button>
             <button 
-              className={`side-btn-mockup ${activePanel === 'wind' ? 'active' : ''}`}
-              onClick={() => togglePanel('wind')}
-            >
-              <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g>
-                  <path d="M34.9999 40.8334C36.547 40.8334 38.0307 40.2188 39.1247 39.1249C40.2187 38.0309 40.8332 36.5472 40.8332 35.0001C40.8332 33.453 40.2187 31.9693 39.1247 30.8753C38.0307 29.7813 36.547 29.1667 34.9999 29.1667C33.4528 29.1667 31.9691 29.7813 30.8751 30.8753C29.7812 31.9693 29.1666 33.453 29.1666 35.0001C29.1666 36.5472 29.7812 38.0309 30.8751 39.1249C31.9691 40.2188 33.4528 40.8334 34.9999 40.8334Z" stroke="currentColor" strokeWidth="2.81713" strokeMiterlimit="10"/>
-                  <path d="M20.4167 34.9994H2.91667M67.0833 34.9994H49.5833M35 49.5828V67.0828M45.3133 45.3128L49.4375 49.4369M20.5625 20.5619L24.6896 24.6861M45.3133 24.6861L49.4375 20.5619M20.5625 49.4369L24.6896 45.3128M35 2.91611V20.4161" stroke="currentColor" strokeWidth="2.81713" strokeMiterlimit="10" strokeLinecap="round"/>
-                </g>
-              </svg>
-            </button>
-            <button 
               className={`side-btn-mockup ${activePanel === 'stats' ? 'active' : ''}`}
               onClick={() => togglePanel('stats')}
             >
@@ -151,11 +142,6 @@ function App() {
                   <Map />
                 </div>
               )}
-              {activePanel === 'wind' && (
-                <div className="wind-rose-container">
-                  <WindRose />
-                </div>
-              )}
               {activePanel === 'stats' && (
                 <div className="statistics-container">
                   <Statistics />
@@ -174,45 +160,21 @@ function App() {
               <div className="context-menu menu-align-left">
                 <div className="context-menu-item">Email: berezin.aw06@gmail.com</div>
                 <div className="context-menu-item">Телефон: +7 (985) 215-47-85</div>
-                <div className="context-menu-item link" onClick={() => { setActiveMenu(null); setShowQrModal(true); }}>
-                  QR-коды авторов
-                </div>
+                <div className="context-menu-item">Git: https://github.com/hxllmvdx/MatMod-glowbyte-case.git</div>
               </div>
             )}
           </div>
           <div className="footer-nav-item">
-            <a href="#" onClick={(e) => { e.preventDefault(); toggleMenu('about'); }}>О нас</a>
-            {activeMenu === 'about' && (
-              <div className="context-menu menu-align-center">
-                <div className="context-menu-item">
-                  <img src={glowbyteLogo} alt="Glowbyte" width="120" />
-                </div>
-                <div className="context-menu-item">
-                  Проект команды Glowbyte для хакатона
-                </div>
-                <div className="context-menu-item">
-                  Прогнозирование возгораний на угольных складах
-                </div>
-                <div className="context-menu-item">
-                  Москва, 2023
-                </div>
-              </div>
-            )}
+            <a href="#" onClick={(e) => { e.preventDefault(); setShowQrModal(true); }}>О нас</a>
           </div>
           <div className="footer-nav-item">
-            <a href="#" onClick={(e) => { e.preventDefault(); toggleMenu('instruction'); }}>Инструкция</a>
-            {activeMenu === 'instruction' && (
-              <div className="context-menu menu-align-right">
-                <div className="context-menu-item">
-                  Краткая инструкция по использованию
-                </div>
-                <div className="context-menu-item link" onClick={() => { setActiveMenu(null); setShowInstructionModal(true); }}>
-                  Подробнее
-                </div>
-              </div>
-            )}
+            <a href="#" onClick={(e) => { e.preventDefault(); handleInstructionClick(); }}>Инструкция</a>
           </div>
         </nav>
+        <div className="footer-logo-copyright">
+          <img src={glowbyteLogo} alt="GlowByte Logo" className="glowbyte-logo" />
+          <span>© Copyright</span>
+        </div>
       </footer>
 
       {showUploadModal && (
@@ -221,31 +183,19 @@ function App() {
 
       {showQrModal && (
         <div className="modal-overlay" onClick={() => setShowQrModal(false)}>
-          <div className="modal qr-modal" onClick={(e) => e.stopPropagation()}>
-            <h2>Контакты команды</h2>
-            <div className="qr-codes">
-              {qrCodes.map((qr, index) => (
-                <div key={index} className="qr-code-item">
-                  <img src={qr.src} alt={`QR ${index + 1}`} />
-                  <p>{qr.caption.split('\n').map((line, i) => (
-                    <span key={i}>{line}<br/></span>
-                  ))}</p>
+          <div className="modal-content qr-modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Наши QR-коды</h2>
+              <button className="modal-close" onClick={() => setShowQrModal(false)}>×</button>
+            </div>
+            <div className="modal-body qr-list">
+              {qrCodes.map((qr, idx) => (
+                <div key={idx} className="qr-item">
+                  <img src={qr.src} alt={qr.caption} className="qr-img" />
+                  <div className="qr-caption">{qr.caption}</div>
                 </div>
               ))}
             </div>
-            <button className="modal-close-btn" onClick={() => setShowQrModal(false)}>Закрыть</button>
-          </div>
-        </div>
-      )}
-
-      {showInstructionModal && (
-        <div className="modal-overlay" onClick={() => setShowInstructionModal(false)}>
-          <div className="modal instruction-modal" onClick={(e) => e.stopPropagation()}>
-            <h2>Инструкция по использованию</h2>
-            <div className="instruction-content">
-              <div dangerouslySetInnerHTML={{ __html: instructionMd.replace(/\n/g, '<br>') }} />
-            </div>
-            <button className="modal-close-btn" onClick={() => setShowInstructionModal(false)}>Закрыть</button>
           </div>
         </div>
       )}

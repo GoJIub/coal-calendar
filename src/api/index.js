@@ -74,7 +74,7 @@ export const generatePredictions = async () => {
  * @returns {Promise}
  */
 export const getCalendarData = async (year, month) => {
-  const response = await fetch(`${API_URL}/calendar/${year}/${month}`);
+  const response = await fetch(`${API_URL}/calendar/${year}/${month}/${day}`);
   return response.json();
 };
 

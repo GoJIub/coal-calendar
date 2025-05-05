@@ -3,12 +3,17 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from datetime import datetime, date
 import calendar
+import logging
 
 from ..database import get_db
 from ..models import CoalTemperature, Weather, FireHistory, FirePrediction
 
 # Создаем роутер
 router = APIRouter()
+
+# Настройка логирования
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 @router.get("/calendar/{year}/{month}", status_code=status.HTTP_200_OK)
 async def get_calendar_data(
@@ -51,23 +56,77 @@ async def get_calendar_data(
             Weather.date <= end_date
         ).all()
         
-        coal_temp = db.query(CoalTemperature).filter(
-            CoalTemperature.date >= start_date,
-            CoalTemperature.date <= end_date
-        ).all()
+        # Логирование результатов запросов
+        logger.info(f"Fire history records: {len(fire_history)}")
+        logger.info(f"Fire predictions records: {len(predictions)}")
+        logger.info(f"Weather records: {len(weather)}")
         
         # Форматируем данные для календаря
         calendar_data = format_calendar_data(
             fire_history,
             predictions,
             weather,
-            coal_temp,
+            [],  # Пустой список для температуры угля
             year,
             month
         )
         
         return {"success": True, "data": calendar_data}
     
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Ошибка при получении данных календаря: {str(e)}"
+        )
+
+@router.get("/calendar/{year}/{month}/{day}", status_code=status.HTTP_200_OK)
+async def get_calendar_data_with_day(
+    year: int,
+    month: int,
+    day: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Получение данных для календаря за указанный день
+
+    - **year**: Год (например, 2023)
+    - **month**: Месяц (1-12)
+    - **day**: День (1-31)
+    """
+    try:
+        # Проверяем корректность параметров
+        if not (1 <= month <= 12):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Месяц должен быть от 1 до 12"
+            )
+
+        if not (1 <= day <= 31):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="День должен быть от 1 до 31"
+            )
+
+        # Формируем дату
+        target_date = date(year, month, day)
+
+        # Получаем данные из базы данных за указанный день
+        fire_history = db.query(FireHistory).filter(FireHistory.date == target_date).all()
+        predictions = db.query(FirePrediction).filter(FirePrediction.date == target_date).all()
+        weather = db.query(Weather).filter(Weather.date == target_date).all()
+
+        # Форматируем данные для календаря
+        calendar_data = format_calendar_data(
+            fire_history,
+            predictions,
+            weather,
+            [],  # Пустой список для температуры угля
+            year,
+            month
+        )
+
+        return {"success": True, "data": calendar_data}
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -92,7 +151,6 @@ def format_calendar_data(fire_history, predictions, weather, coal_temp, year, mo
             "fire": None,
             "prediction": None,
             "weather": None,
-            "coalTemp": None,
             "status": "unknown"
         }
     
@@ -123,14 +181,6 @@ def format_calendar_data(fire_history, predictions, weather, coal_temp, year, mo
                 "humidity": w.humidity,
                 "windSpeed": w.wind_speed,
                 "windDirection": w.wind_direction
-            }
-    
-    # Заполняем данные о температуре угля
-    for ct in coal_temp:
-        date_str = ct.date.isoformat()
-        if date_str in calendar_data:
-            calendar_data[date_str]["coalTemp"] = {
-                "temperature": ct.temperature
             }
     
     # Определяем статус дня для календаря

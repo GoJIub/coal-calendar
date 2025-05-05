@@ -8,7 +8,7 @@ from ..database import Base
 
 # SQLAlchemy модель истории возгораний
 class FireHistory(Base):
-    __tablename__ = f"fire_history_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    __tablename__ = "fire_history"
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     creation_date = Column(DateTime, nullable=False)
@@ -19,6 +19,7 @@ class FireHistory(Base):
     end_date = Column(DateTime, nullable=True)
     initial_stack_date = Column(DateTime, nullable=True)
     stack = Column(Integer, nullable=False)
+    date = Column(Date, nullable=False)
 
 # SQLAlchemy модель прогнозов возгораний
 class FirePrediction(Base):
@@ -46,7 +47,7 @@ class FireHistoryResponse(FireHistoryBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class FirePredictionBase(BaseModel):
     date: date
@@ -62,4 +63,4 @@ class FirePredictionResponse(FirePredictionBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True

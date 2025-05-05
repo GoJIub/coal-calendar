@@ -8,15 +8,13 @@ from ..database import Base
 
 # SQLAlchemy модель
 class CoalTemperature(Base):
-    __tablename__ = f"coal_temperature_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    __tablename__ = "coal_temperature"
 
     id = Column(Integer, primary_key=True, index=True)
-    warehouse = Column(Integer, nullable=False)
-    stack = Column(Integer, nullable=False)
-    grade = Column(String, nullable=False)
-    max_temp = Column(Float, nullable=False)
-    picket = Column(String, nullable=False)
-    act_date = Column(Date, nullable=False)
+    date = Column(Date, nullable=False)
+    location = Column(String, nullable=False)
+    temperature = Column(Float, nullable=False)
+    created_at = Column(DateTime, default=func.now())
 
 # Pydantic модели для API
 class CoalTemperatureBase(BaseModel):

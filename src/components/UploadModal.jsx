@@ -75,59 +75,37 @@ const UploadModal = ({ onClose }) => {
       setError('Пожалуйста, выберите хотя бы один файл для загрузки');
       return;
     }
-    
+
     setIsLoading(true);
     setError(null);
     setSuccess(null);
-    
+
     try {
-      // Загрузка файлов
       const uploadPromises = [];
-      
+
       if (coalFile) {
         uploadPromises.push(uploadCoalTemperature(coalFile));
       }
-      
+
       if (weatherFile) {
         uploadPromises.push(uploadWeatherData(weatherFile));
       }
-      
+
       if (fireHistoryFile) {
         uploadPromises.push(uploadFireHistory(fireHistoryFile));
       }
-      
+
       const results = await Promise.all(uploadPromises);
-      
-      // Проверяем результаты загрузки
+
       const hasError = results.some(result => !result.success);
-      
+
       if (hasError) {
-        const errorMessages = results
-          .filter(result => !result.success)
-          .map(result => result.message)
-          .join(', ');
-        
-        setError(`Ошибка при загрузке файлов: ${errorMessages}`);
+        setError('Некоторые файлы не удалось загрузить. Проверьте формат и повторите попытку.');
       } else {
-        setSuccess('Файлы успешно загружены');
-        
-        // Запускаем модель прогнозирования
-        try {
-          const predictionResult = await generatePredictions();
-          
-          if (predictionResult.success) {
-            setSuccess('Файлы успешно загружены и прогнозы созданы');
-          } else {
-            setError('Файлы загружены, но произошла ошибка при создании прогнозов');
-          }
-        } catch (predError) {
-          console.error('Ошибка при запуске модели прогнозирования:', predError);
-          setError('Файлы загружены, но произошла ошибка при создании прогнозов');
-        }
+        setSuccess('Все файлы успешно загружены!');
       }
     } catch (err) {
-      console.error('Ошибка при загрузке файлов:', err);
-      setError('Произошла ошибка при загрузке файлов. Пожалуйста, попробуйте снова.');
+      setError('Произошла ошибка при загрузке файлов.');
     } finally {
       setIsLoading(false);
     }
@@ -251,4 +229,4 @@ const UploadModal = ({ onClose }) => {
   );
 };
 
-export default UploadModal; 
+export default UploadModal;

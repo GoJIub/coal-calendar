@@ -37,28 +37,37 @@ const Calendar = () => {
   const loadCalendarData = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const year = currentDate.getFullYear();
-      const month = currentDate.getMonth() + 1; // API ожидает месяц от 1 до 12
-      
-      const response = await getCalendarData(year, month);
-      
-      if (response.success) {
-        setCalendarData(response.data);
+      const month = currentDate.getMonth() + 1; // API expects month from 1 to 12
+      const day = currentDate.getDate();
+
+      // Extract year, month, and day from start_date if available
+      const startDate = calendarData?.start_date;
+      if (startDate) {
+        const parsedDate = new Date(startDate);
+        const extractedYear = parsedDate.getFullYear();
+        const extractedMonth = parsedDate.getMonth() + 1;
+        const extractedDay = parsedDate.getDate();
+
+        const response = await getCalendarData(extractedYear, extractedMonth, extractedDay);
+        if (response.success) {
+          setCalendarData(response.data);
+        } else {
+          setError('Failed to load calendar data');
+        }
       } else {
-        setError('Не удалось загрузить данные календаря');
-        console.error('Ошибка при загрузке данных календаря:', response.message);
-        
-        // Используем запасные данные при ошибке
-        setCalendarData(getFallbackData());
+        const response = await getCalendarData(year, month, day);
+        if (response.success) {
+          setCalendarData(response.data);
+        } else {
+          setError('Failed to load calendar data');
+        }
       }
     } catch (err) {
-      setError('Произошла ошибка при загрузке данных календаря');
-      console.error('Ошибка при загрузке данных календаря:', err);
-      
-      // Используем запасные данные при ошибке
-      setCalendarData(getFallbackData());
+      setError('An error occurred while loading calendar data');
+      console.error('Error loading calendar data:', err);
     } finally {
       setIsLoading(false);
     }
@@ -268,4 +277,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar; 
+export default Calendar;
